@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "./card"; // Make sure the Card component is correctly imported
 import LoadingScreen from "./loading"; // Assuming Loading component exists
 import { fetchDogImages } from "./Utils/fetchdata";
+import Confetti from "react-confetti";
 
 interface GridProps {
   onReset: () => void;
@@ -12,18 +13,10 @@ const Grid: React.FC<GridProps> = ({ onReset }) => {
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
   const [isChecking, setIsChecking] = useState<boolean>(false);
-  let count = 0;
-  const IncreamentMatchCount = () => {
-    count++;
-    CheckMatchCount();
-  };
-  const CheckMatchCount = () => {
-    if (count == 16) {
-      onReset();
-      count = 0;
-    }
-  };
+  const [count, setCount] = useState<number>(0);
   const defaultImage = "/placeholder.png";
+  const [showVictory, setShowVictory] = useState<boolean>(false);
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const shuffle = (array: string[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -65,11 +58,27 @@ const Grid: React.FC<GridProps> = ({ onReset }) => {
         newMatchedCards[firstCard] = true;
         newMatchedCards[secondCard] = true;
         setMatchedCards(newMatchedCards);
+        IncrementMatchCount();
       }
-
       setTimeout(() => {
         setFlippedCards([]);
         setIsChecking(false);
+      }, 600);
+    }
+  };
+
+  const IncrementMatchCount = () => {
+    setCount((prevCount) => prevCount + 2);
+    CheckMatchCount(count + 2);
+  };
+
+  const CheckMatchCount = (currentCount: number) => {
+    if (currentCount === 16) {
+      setShowConfetti(true);
+
+      setTimeout(() => {
+        setShowVictory(true);
+        setCount(0);
       }, 1000);
     }
   };
@@ -79,19 +88,49 @@ const Grid: React.FC<GridProps> = ({ onReset }) => {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4 max-h-[700px] max-w-[500px] w-full items-center place-items-center">
-      {images.map((image, index) => (
-        <Card
-          key={index}
-          id={index}
-          image={image}
-          defaultImage={defaultImage}
-          onCardClick={handleCardClick}
-          isFlipped={flippedCards.includes(index) || matchedCards[index]} // Ensure matched cards stay flipped
-          isMatched={matchedCards[index]}
-          onMatch={IncreamentMatchCount}
-        />
-      ))}
+    <div className="flex justify-center items-center w-full h-full relative">
+      {showConfetti && (
+        <div className="fixed inset-0 z-10">
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+            numberOfPieces={200}
+          />
+        </div>
+      )}
+      <div
+        className={`absolute inset-0 flex flex-col justify-center items-center bg-black/75 z-10 ${
+          showVictory ? "visible" : "invisible"
+        }`}
+      >
+        <div className="bg-sky-500 rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4 text-white">
+            Congrats, you beat the game!
+          </h2>
+          <button
+            onClick={onReset}
+            className="border border-[#fffefe] hover:bg-sky-900 text-[#ffffff] font-bold py-2 px-8 rounded-lg transition-colors duration-200"
+          >
+            Play Again
+          </button>
+        </div>
+      </div>
+      <div className="flex justify-center items-center w-full h-full">
+        <div className="grid grid-cols-4 gap-4 max-h-[700px] max-w-[500px] w-full items-center place-items-center">
+          {images.map((image, index) => (
+            <Card
+              key={index}
+              id={index}
+              image={image}
+              defaultImage={defaultImage}
+              onCardClick={handleCardClick}
+              isFlipped={flippedCards.includes(index) || matchedCards[index]} // Ensure matched cards stay flipped
+              isMatched={matchedCards[index]}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

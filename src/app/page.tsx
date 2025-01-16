@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import PageController from "./pagecontroller";
 export default function Home() {
   return (

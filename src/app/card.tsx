@@ -7,7 +7,6 @@ interface CardProps {
   onCardClick: (id: number) => void;
   isFlipped: boolean;
   isMatched: boolean;
-  onMatch: () => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -17,20 +16,17 @@ const Card: React.FC<CardProps> = ({
   onCardClick,
   isFlipped,
   isMatched,
-  onMatch,
 }) => {
   const handleClick = () => {
     if (!isMatched) {
       onCardClick(id);
-    } else {
-      onMatch();
     }
   };
 
   return (
     <div
       onClick={handleClick}
-      className="w-full aspect-[3/4] bg-blue-500 border hover:scale-105 duration-300 relative overflow-hidden cursor-pointer"
+      className="w-full aspect-[3/4]  border hover:scale-105 duration-300 relative overflow-hidden cursor-pointer"
     >
       {/* Flipping effect */}
       <div

@@ -5,25 +5,19 @@ import Grid from "./grid";
 const PageController = () => {
   const [isEntryPage, setEntryPage] = useState<boolean>(true);
 
-  const resetPage = () => {
-    setEntryPage(false);
+  const handleGameState = (showEntry: boolean) => {
+    setEntryPage(showEntry);
   };
 
-  console.log(isEntryPage);
-  
-  if (isEntryPage) {
-    return (
-      <div>
-        <Entrypage startgame={resetPage}/>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <Grid onReset={resetPage} />
-      </div>
-    );
-  }
+  return (
+    <div className="w-full h-full">
+      {isEntryPage ? (
+        <Entrypage startgame={() => handleGameState(false)} />
+      ) : (
+        <Grid onReset={() => handleGameState(true)} />
+      )}
+    </div>
+  );
 };
 
 export default PageController;
