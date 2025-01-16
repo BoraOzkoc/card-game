@@ -3,62 +3,77 @@ import Card from "./card"; // Make sure the Card component is correctly imported
 import LoadingScreen from "./loading"; // Assuming Loading component exists
 import { fetchDogImages } from "./Utils/fetchdata";
 
-const Grid = () => {
+interface GridProps {
+  onReset: () => void;
+}
+const Grid: React.FC<GridProps> = ({ onReset }) => {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [flippedCards, setFlippedCards] = useState<number[]>([]); // Track flipped cards
-  const [matchedCards, setMatchedCards] = useState<boolean[]>([]); // Track matched cards
-  const [isChecking, setIsChecking] = useState<boolean>(false); // To prevent checking more than two cards
+  const [flippedCards, setFlippedCards] = useState<number[]>([]);
+  const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
+  const [isChecking, setIsChecking] = useState<boolean>(false);
+  let count = 0;
+  const IncreamentMatchCount = () => {
+    count++;
+    CheckMatchCount();
+  };
+  const CheckMatchCount = () => {
+    if (count == 16) {
+      onReset();
+      count = 0;
+    }
+  };
+  const defaultImage = "/placeholder.png";
+  const shuffle = (array: string[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
-  const defaultImage = "/placeholder.png"; // Default image to show when card is not flipped
-
-  // Fetch images and set up game state
   useEffect(() => {
     const loadImages = async () => {
       try {
-        const fetchedImages = await fetchDogImages(8); // Fetch 8 images (or however many you need)
-        const clonedArray = fetchedImages.flatMap((item) => [item, item]); // Duplicate each image to make pairs
-        setImages(clonedArray); // Store the images
-        setMatchedCards(new Array(clonedArray.length).fill(false)); // Initialize matched cards as false
+        const fetchedImages = await fetchDogImages(8);
+        const clonedArray = fetchedImages.flatMap((item) => [item, item]);
+        setImages(clonedArray);
+        shuffle(clonedArray);
+        setMatchedCards(new Array(clonedArray.length).fill(false));
       } catch (error) {
         console.error("Failed to load images:", error);
       } finally {
-        setLoading(false); // Stop loading once images are fetched
+        setLoading(false);
       }
     };
 
-    loadImages(); // Start fetching images when component mounts
+    loadImages();
   }, []);
 
-  // Handle card flip
   const handleCardClick = (id: number) => {
-    if (isChecking || matchedCards[id]) return; // Don't allow more clicks if checking or already matched
+    if (isChecking || matchedCards[id] || flippedCards.includes(id)) return;
 
     const newFlippedCards = [...flippedCards, id];
-    setFlippedCards(newFlippedCards); // Add the clicked card to flipped cards
+    setFlippedCards(newFlippedCards);
 
-    // If two cards are flipped, check for a match
     if (newFlippedCards.length === 2) {
-      setIsChecking(true); // Prevent further flips until checking is complete
+      setIsChecking(true);
 
-      // Check if the selected cards match
       const [firstCard, secondCard] = newFlippedCards;
       if (images[firstCard] === images[secondCard]) {
         const newMatchedCards = [...matchedCards];
-        newMatchedCards[firstCard] = true; // Mark first card as matched
-        newMatchedCards[secondCard] = true; // Mark second card as matched
+        newMatchedCards[firstCard] = true;
+        newMatchedCards[secondCard] = true;
         setMatchedCards(newMatchedCards);
       }
 
-      // After checking the cards, reset flipped cards after a delay
       setTimeout(() => {
-        setFlippedCards([]); // Clear flipped cards
-        setIsChecking(false); // Allow further card flips
-      }, 1000); // 1 second delay before allowing the next check
+        setFlippedCards([]);
+        setIsChecking(false);
+      }, 1000);
     }
   };
 
-  // Show loading screen if images are still loading
   if (loading) {
     return <LoadingScreen />;
   }
@@ -72,12 +87,12 @@ const Grid = () => {
           image={image}
           defaultImage={defaultImage}
           onCardClick={handleCardClick}
-          isFlipped={flippedCards.includes(index)}
+          isFlipped={flippedCards.includes(index) || matchedCards[index]} // Ensure matched cards stay flipped
           isMatched={matchedCards[index]}
+          onMatch={IncreamentMatchCount}
         />
       ))}
     </div>
   );
 };
-
 export default Grid;

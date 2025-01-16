@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
 
-const entrypage = () => {
+interface EntryProps { startgame: () => void }
+
+const entrypage = ( { startgame }: EntryProps) => {
   return (
-    <div>entrypage</div>
-  )
-}
+    <div className="flex flex-col">
+      <p>Welcome to my memory game!</p>
 
-export default entrypage
+      <button onClick={startgame} className="border border-[#41db5b]">Start Game</button>
+    </div>
+  );
+};
+
+export default entrypage;
