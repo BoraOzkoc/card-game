@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Card from "./card"; // Make sure the Card component is correctly imported
-import LoadingScreen from "./loading"; // Assuming Loading component exists
+import Card from "./card";
+import LoadingScreen from "./loading";
 import { fetchDogImages } from "./Utils/fetchdata";
 import Confetti from "react-confetti";
 
@@ -14,7 +14,7 @@ const Grid: React.FC<GridProps> = ({ onReset }) => {
   const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
-  const defaultImage = "/placeholder.png";
+  const defaultImage = "/placeholder.jpeg";
   const [showVictory, setShowVictory] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const shuffle = (array: string[]) => {
@@ -90,7 +90,7 @@ const Grid: React.FC<GridProps> = ({ onReset }) => {
   return (
     <div className="flex justify-center items-center w-full h-full relative">
       {showConfetti && (
-        <div className="fixed inset-0 z-10">
+        <div className="fixed inset-0 z-50 pointer-events-none">
           <Confetti
             width={window.innerWidth}
             height={window.innerHeight}

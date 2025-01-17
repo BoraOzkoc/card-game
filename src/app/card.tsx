@@ -37,7 +37,7 @@ const Card: React.FC<CardProps> = ({
         {/* Front: Default Image */}
         <div className="absolute w-full h-full bg-cover bg-center">
           <img
-            src={defaultImage} // Default image
+            src={defaultImage}
             alt="Default Image"
             className="object-cover w-full h-full"
           />
@@ -50,7 +50,7 @@ const Card: React.FC<CardProps> = ({
           }`}
         >
           <img
-            src={image} // Dog image
+            src={image}
             alt="Dog Image"
             className="object-cover w-full h-full"
           />
