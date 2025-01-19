@@ -26,7 +26,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <div
       onClick={handleClick}
-      className="w-full aspect-[3/4]  border hover:scale-105 duration-300 relative overflow-hidden cursor-pointer rounded-lg"
+      className="w-full aspect-[3/4]  border hover:scale-105 duration-300 relative overflow-hidden cursor-pointer rounded-xl"
     >
       {/* Flipping effect */}
       <div
