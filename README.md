@@ -65,9 +65,6 @@ npm run dev
 - [@next/font](https://nextjs.org/docs/basic-features/font-optimization) - Font optimization
 - [react-confetti](https://www.npmjs.com/package/react-confetti) - Celebration effects
 - [react-icons](https://react-icons.github.io/react-icons/) - Icon library
-- [next-themes](https://github.com/pacocoursey/next-themes) - Dark/Light mode handling
-- [clsx](https://github.com/lukeed/clsx) - CSS class name utility
-- [tailwind-merge](https://github.com/dcastil/tailwind-merge) - Tailwind class merging
 
 ## 👤 Author
 
