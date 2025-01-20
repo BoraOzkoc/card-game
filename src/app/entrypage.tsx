@@ -9,7 +9,7 @@ const entrypage = ({ startgame }: EntryProps) => {
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="flex flex-col justify-center items-center">
-        <p className=" p-6 text-xl font-bold text-center">Welcome to my memory game!</p>
+        <p className=" p-6 text-xl font-bold">Welcome to my memory game!</p>
 
         <button
           onClick={startgame}
